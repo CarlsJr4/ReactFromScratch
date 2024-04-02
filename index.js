@@ -22,19 +22,6 @@ function createTextElement(text) {
   };
 }
 
-// This is our library
-const Didact = {
-  createElement,
-  render,
-};
-
-const element = Didact.createElement(
-  'div',
-  { id: 'foo' },
-  Didact.createElement('a', null, 'bar'),
-  Didact.createElement('b')
-);
-
 function render(element, container) {
   // TODO: Create DOM nodes
   const dom =
@@ -55,5 +42,32 @@ function render(element, container) {
   container.appendChild(dom);
 }
 
+// This is our library
+const Didact = {
+  createElement,
+  render,
+};
+
+const element = Didact.createElement(
+  'div',
+  { id: 'foo' },
+  Didact.createElement(
+    'a',
+    { href: 'https://google.com', target: '_blank' },
+    'Google'
+  ),
+  Didact.createElement('p', null, 'baz')
+);
+
+const element2 = Didact.createElement('p', { className: 'tacoShell' }, 'Tacos');
+const element3 = Didact.createElement(
+  'ul',
+  null,
+  Didact.createElement('li', null, 'Lettuce'),
+  Didact.createElement('li', null, 'Tomato')
+);
+
 const container = document.getElementById('root');
 Didact.render(element, container);
+Didact.render(element2, container);
+Didact.render(element3, container);
