@@ -5,13 +5,14 @@ function createElement(type, props, ...children) {
     type,
     props: {
       ...props,
-      children: children.map(child =>
-        typeof child === 'object' ? child : createTextElement(child)
+      children: children.map(
+        child => (typeof child === 'object' ? child : createTextElement(child)) // Any child that isn't an object (i.e. text) gets treated like a plain text node
       ),
     },
   };
 }
 
+// We need to treat text children differently because of how text nodes get treated in the browser
 function createTextElement(text) {
   return {
     type: 'TEXT_ELEMENT',
@@ -23,22 +24,26 @@ function createTextElement(text) {
 }
 
 function render(element, container) {
-  // TODO: Create DOM nodes
+  // dom is the newly created node to be inserted into the DOM
   const dom =
     element.type == 'TEXT_ELEMENT'
-      ? document.createTextNode('')
+      ? document.createTextNode('') // Again, we need to treat text nodes differently
       : document.createElement(element.type);
 
   const isProperty = key => key !== 'children';
 
+  // Any props key that isn't the children array will be used to add attributes to the created element
   Object.keys(element.props)
     .filter(isProperty)
     .forEach(name => {
       dom[name] = element.props[name];
     });
 
+  // We need to recursively render each child (which could also be a new element)
+  // This should eventually form a tree
   element.props.children.forEach(child => render(child, dom));
 
+  // Append the children (or nested children) to the dom node we made
   container.appendChild(dom);
 }
 
